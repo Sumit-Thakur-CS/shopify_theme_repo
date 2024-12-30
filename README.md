@@ -1,1 +1,0 @@
-# shopify_theme_repo
