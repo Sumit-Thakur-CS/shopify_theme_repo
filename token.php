@@ -1,4 +1,8 @@
 <?php
+
+include_once ('includes/mysql_connect.php');
+
+
 $api_key = 'a57295b3530c33e04b7340cb5bb103fe';
 $secret_key = '65cd1a9e7cb9ffd7f4af62d8df122e73';
 $parameters = $_GET;
@@ -50,6 +54,20 @@ if (hash_equals($hmac, $new_hmac)) {
         // Check if the response contains an access token
         if (isset($response['access_token'])) {
             echo 'Access Token: ' . $response['access_token'];
+
+
+            $query = "INSERT INTO shops (shop_url, access_token,install_date) VALUES ('" . $shop_url ."','" . $response['access_token'] ."',Now()) ON DUPLICATE KEY UPDATE access_token='" .  $response['access_token']  ."'";
+
+            if($mysql->query($query))
+            {
+                header("Location: https://" . $shop_url . '/admin/apps');
+                
+                exit();
+            }
+
+
+
+
         } else {
             echo 'Error: No access token received. Response: ';
             print_r($response);
